@@ -20,19 +20,21 @@ if (process.argv.length <= 2) {
        | |___  ___ _ __| |_ 
        | / __|/ _ \\ '__| __|
        | \\__ \\  __/ |  | |_ 
-       |_|___/\\___|_|   \\__|
+       |_|___/\\___|_|   \\__| by virkillz
                                        
+       v 0.1.0
 
-                                                                                          v 0.1.0
+       This is a simple CLI tool to rapidly fetch HTML snippet and put it in your code. 
+       By using this, we can fetch snippet code from github repository and insert directly 
+       into given HTML file. By put 'tsert::[filename]' it will call http request, get the 
+       file and insert into your text.
 
-    tsert will fetch html snippet from repository and insert into your html file. It will replace '[tsert-here]'
-    inside your html document, or put before <footer> or before </body> when other not present.
   
 	usage:
-	  tsert <keyword> <path>
+	  tsert <path>
   
 	example:
-	   tsert nav-1 index.html
+	   tsert index.html
 	`
     console.log(usageText);
     process.exit(-1);
@@ -50,9 +52,9 @@ var file = process.argv[2];
             } else {
     
                 if (data.includes("tsert::")) {
-                        fetchKeyword(data);
+                        fetchKeyword(data, file);
                 } else {
-                    console.log("<tsert> Finished: no keyword 'tsert::' founded anymore.");
+                    console.log("<tsert> ~ Finished: no keyword 'tsert::' founded anymore. ~");
                 }
             };
         });
@@ -73,7 +75,7 @@ var file = process.argv[2];
         return res[0];
     }     
 
-    function fetchKeyword(data) {
+    function fetchKeyword(data, path) {
         var res = data.split("tsert::");
         rawkeyword = firstWord(res[1]);
         newrawkeyword = stripNewLine(rawkeyword);
@@ -85,7 +87,7 @@ var file = process.argv[2];
 
             //for debug purpose only
             // console.log(res);
-            
+
             let error;
             if (statusCode !== 200) {
                 error = new Error(`Request Failed.` + `Status Code: ${statusCode}` + '. Keyword Unknown.');
@@ -104,7 +106,7 @@ var file = process.argv[2];
             res.on('end', _test => {
                 try {
 
-                    writeFile(rawData, keyword, "target.html")
+                    writeFile(rawData, keyword, path)
 
                 } catch (e) {
                     console.log(e.message);

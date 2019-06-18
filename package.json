@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/virkillz/tsert/issues"
   },
-  "homepage": "https://github.com/virkillz/tsert#readme"
+  "homepage": "https://github.com/virkillz/tsert#readme",
+  "bin": {
+    "tsert": "./tsert.js"
+  }
 }

@@ -1,5 +1,7 @@
 # Tsert
 
+![Alt text](screenshot.png "Tsert")
+
 This is a simple CLI tool to rapidly develop HTML. By using this, we can fetch snippet code from github repository and insert directly into given HTML file.
 
 ### Usage

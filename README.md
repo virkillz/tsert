@@ -19,7 +19,7 @@ Currently all the snippet is in this following repo, under /templates folder:
 
 Let say we have blank HTML document called `index.html`.
 
-"""
+```
 
 <!DOCTYPE html>
 <html lang="en">
@@ -34,13 +34,13 @@ Let say we have blank HTML document called `index.html`.
 </body>
 </html>
 
-"""
+```
 
 From the same directory we can do`tsert header-1 index.html`
 
 The result 
 
-"""
+```
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,7 +70,7 @@ The result
 </body>
 </html>
 
-"""
+```
 
 
 ## Installation

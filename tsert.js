@@ -20,7 +20,7 @@ if (process.argv.length <= 2) {
        | |___  ___ _ __| |_ 
        | / __|/ _ \\ '__| __|
        | \\__ \\  __/ |  | |_ 
-       |_|___/\\___|_|   \\__| ` + colors.reset + colors.fg.standard[4] + `v 0.2.0` + colors.reset + 
+       |_|___/\\___|_|   \\__| ` + colors.reset + colors.fg.standard[4] + `v 1.0.0` + colors.reset + 
 
        colors.fg.standard[3] + ` 
        

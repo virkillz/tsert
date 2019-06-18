@@ -11,36 +11,63 @@
 
 const fs = require('fs');
 var http = require('https');
-const urlhost = "https://raw.githubusercontent.com/virkillz/tailstack/master/templates/";
+var colors = require('ansi-256-colors');
 
 if (process.argv.length <= 2) {
-    const usageText = `
+    const usageText = colors.fg.standard[1] + `
     _______            _   
     |__   __|          | |  
        | |___  ___ _ __| |_ 
        | / __|/ _ \\ '__| __|
        | \\__ \\  __/ |  | |_ 
-       |_|___/\\___|_|   \\__| by virkillz
+       |_|___/\\___|_|   \\__| ` + colors.reset + colors.fg.standard[4] + `v 0.2.0` + colors.reset + 
+
+       colors.fg.standard[3] + ` 
+       
+       by virkillz`
+
                                        
-       v 0.2.0
+       + colors.fg.standard[5] + `
 
        This is a simple CLI tool to rapidly fetch HTML snippet and put it in your code. 
        By using this, we can fetch snippet code from github repository and insert directly 
        into given HTML file. By put 'tsert::[filename]' it will call http request, get the 
        file and insert into your text.
 
-  
-	usage:
-	  tsert <path>
-  
-	example:
-	   tsert index.html
+       ` + colors.reset + `
+       Usage:
+       ` + colors.fg.standard[4] + `tsert <path> ` + colors.reset + `                      // for normal use
+
+       ` + colors.fg.standard[4] + `tsert <path> -url <hostname> ` + colors.reset + `      // for custom hostname
+
+       Example:
+       ` + colors.fg.standard[5] + `tsert index.html ` + colors.reset + `
+       
+       This will look inside your 'index.html' file and replace all keyword tsert::[template-name]
+       with whatever content from default
+       https://raw.githubusercontent.com/virkillz/tailstack/master/templates/template-name.html
+
+
+       ` + colors.fg.standard[5] + `tsert index.html -h http://something-else.com/template ` + colors.reset + `
+
+       This will look inside your 'index.html' file and replace all keyword tsert::[template-name]
+       with whatever content from 
+       http://something-else.com/template/template-name.html       
 	`
     console.log(usageText);
     process.exit(-1);
 }
 
-var file = process.argv[2];
+//Use minimist to parse argument
+var argv = require('minimist')(process.argv.slice(2));
+var file = argv._[0];
+
+// Default hostname and url path
+var urlhost = "https://raw.githubusercontent.com/virkillz/tailstack/master/templates/";
+
+if (argv.h != undefined) {
+    urlhost = argv.h;
+}
 
     check(file);
 
@@ -61,36 +88,34 @@ var file = process.argv[2];
     }
 
     function firstWord(str) {
-        var res = str.split(" ");
+        let res = str.split(" ");
         return res[0];
     }
 
     function stripNewLine(str) {
-        var res = str.split("\n");
+        let res = str.split("\n");
         return res[0];
     } 
     
     function stripBraces(str) {
-        var res = str.split("<");
+        let res = str.split("<");
         return res[0];
     }     
 
     function fetchKeyword(data, path) {
-        var res = data.split("tsert::");
+        let res = data.split("tsert::");
         rawkeyword = firstWord(res[1]);
         newrawkeyword = stripNewLine(rawkeyword);
         keyword = stripBraces(newrawkeyword);
         console.log(keyword);
-        http.get(urlhost + keyword + ".html", (res) => {
+        let fullpath = urlhost + keyword + ".html"
+        http.get(fullpath, (res) => {
             const statusCode = res.statusCode;
             const contentType = res.headers['content-type'];
 
-            //for debug purpose only
-            // console.log(res);
-
             let error;
             if (statusCode !== 200) {
-                error = new Error(`Request Failed.` + `Status Code: ${statusCode}` + '. Keyword Unknown.');
+                error = new Error(`Request Failed when reaching: ` + fullpath + ` Status Code: ${statusCode}`);
             }
     
             if (error) {

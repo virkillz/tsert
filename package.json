@@ -25,6 +25,7 @@
     "tsert": "./tsert.js"
   },
   "dependencies": {
+    "ansi-256-colors": "^1.1.0",
     "minimist": "^1.2.0"
   }
 }

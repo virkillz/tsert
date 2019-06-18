@@ -22,7 +22,7 @@ if (process.argv.length <= 2) {
        | \\__ \\  __/ |  | |_ 
        |_|___/\\___|_|   \\__| by virkillz
                                        
-       v 0.1.0
+       v 0.2.0
 
        This is a simple CLI tool to rapidly fetch HTML snippet and put it in your code. 
        By using this, we can fetch snippet code from github repository and insert directly 

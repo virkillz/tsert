@@ -13,7 +13,7 @@ const fs = require('fs');
 var http = require('https');
 const urlhost = "https://raw.githubusercontent.com/virkillz/tailstack/master/templates/";
 
-if (process.argv.length <= 3) {
+if (process.argv.length <= 2) {
     const usageText = `
     _______            _   
     |__   __|          | |  
@@ -38,102 +38,112 @@ if (process.argv.length <= 3) {
     process.exit(-1);
 }
 
-var componentName = process.argv[2];
-var fileTarget = process.argv[3];
+var file = process.argv[2];
 
-fetchAndWrite(componentName, fileTarget);
+    check(file);
 
-function fetchAndWrite(keyword, path) {
-    //get the text from repo
-    http.get(urlhost + keyword + ".html", (res) => {
-        const statusCode = res.statusCode;
-        const contentType = res.headers['content-type'];
-
-        let error;
-        if (statusCode !== 200) {
-            error = new Error(`Request Failed.` + `Status Code: ${statusCode}`);
-        }
-
-        if (error) {
-            console.log(error.message);
-            // consume response data to free up memory
-            res.resume;
-            return;
-        }
-
-        res.setEncoding('utf8');
-        let rawData = "";
-        res.on('data', (chunk) => rawData += chunk);
-        res.on('end', _test => {
-            try {
-                writeFile(rawData, path);
-            } catch (e) {
-                console.log(e.message);
-            }
+    function check(file) {
+        fs.readFile(file, 'utf8', function (err, data) {
+            if (err) {
+                console.log("<tsert>  Error: Cannot read the file.");
+                return;
+            } else {
+    
+                if (data.includes("tsert::")) {
+                        fetchKeyword(data);
+                } else {
+                    console.log("<tsert> Finished: no keyword 'tsert::' founded anymore.");
+                }
+            };
         });
-
-    }).on('error', (e) => {
-        console.log(`Got error: ${e.message}`);
-    });
-}
-
-
-
-
-function writeFile(content, path) {
-
-    if (!fs.existsSync(path)) {
-        console.log("<tsert> Error: The given path " + path + " did not exist");
-        process.exit(-1);
     }
 
-    var document = "";
-    fs.readFile(path, 'utf8', function (err, data) {
-        if (err) {
-            console.log("<tsert>  Error: Cannot read the file.");
-            return console.log(err);
-        } else {
+    function firstWord(str) {
+        var res = str.split(" ");
+        return res[0];
+    }
 
-            if (data.includes("[tsert-here]")) {
-                var res = data.split("[tsert-here]");
-                if (res.length == 2) {
-                    document = res[0] + content + res[1];
-                } else {
-                    console.log(res.length);
-                    console.log("<tsert> Error: Seems like more than one keyword [tsert-here] founded");
-                };
-            } else if (data.includes("<footer>")) {
-                var res = data.split("<footer>");
-                if (res.length == 2) {
-                    document = res[0] + "\n" + content + "\n\n<footer>" + res[1];
-                } else {
-                    console.log(res.length);
-                    console.log("<tsert>  Error: Seems like more than one keyword <footer> founded");
-                };
-            } else if (data.includes("</body>")) {
-                var res = data.split("</body>");
-                if (res.length == 2) {
-                    document = res[0] + "\n" + content + "\n\n</body>" + res[1];
-                } else {
-                    console.log(res.length);
-                    console.log("<tsert> Error: Seems like more than one keyword </body> founded");
-                };
-            } else
-                console.log("We can't find any [tsert-here], <footer> or <body> inside the docs");
+    function stripNewLine(str) {
+        var res = str.split("\n");
+        return res[0];
+    } 
+    
+    function stripBraces(str) {
+        var res = str.split("<");
+        return res[0];
+    }     
 
-        };
+    function fetchKeyword(data) {
+        var res = data.split("tsert::");
+        rawkeyword = firstWord(res[1]);
+        newrawkeyword = stripNewLine(rawkeyword);
+        keyword = stripBraces(newrawkeyword);
+        console.log(keyword);
+        http.get(urlhost + keyword + ".html", (res) => {
+            const statusCode = res.statusCode;
+            const contentType = res.headers['content-type'];
 
-        if (document == "") {
-            console.log("<tsert> Error: Failed to insert.");
-        } else {
-            fs.writeFile(path, document, 'utf8', function (err) {
-                if (err) { console.log(err); }
-                else { console.log("<tsert> Success: Insert done! Check " + path) }
-                ;
+            //for debug purpose only
+            // console.log(res);
+            
+            let error;
+            if (statusCode !== 200) {
+                error = new Error(`Request Failed.` + `Status Code: ${statusCode}` + '. Keyword Unknown.');
+            }
+    
+            if (error) {
+                console.log(error.message);
+                // consume response data to free up memory
+                res.resume;
+                return;
+            }
+    
+            res.setEncoding('utf8');
+            let rawData = "";
+            res.on('data', (chunk) => rawData += chunk);
+            res.on('end', _test => {
+                try {
+
+                    writeFile(rawData, keyword, "target.html")
+
+                } catch (e) {
+                    console.log(e.message);
+                }
             });
+    
+        }).on('error', (e) => {
+            console.log(`Got error: ${e.message}`);
+        });
+    }
+
+    function writeFile(content, keyword, path) {
+
+        if (!fs.existsSync(path)) {
+            console.log("<tsert> Error: The given path " + path + " did not exist");
+            process.exit(-1);
         }
-
-    });
-}
-
-
+    
+        var document = "";
+        fs.readFile(path, 'utf8', function (err, data) {
+            if (err) {
+                console.log("<tsert>  Error: Cannot read the file.");
+                return console.log(err);
+            } else {
+    
+                document = data.replace("tsert::" + keyword, content);
+    
+            };
+    
+            if (document == "") {
+                console.log("<tsert> Error: Failed to insert.");
+            } else {
+                fs.writeFile(path, document, 'utf8', function (err) {
+                    if (err) { console.log(err); }
+                    else { console.log("<tsert> Success: " + " has been replaced."); check(path); }
+                    ;
+                });
+            }
+    
+        });
+    }
+    

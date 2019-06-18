@@ -23,5 +23,8 @@
   "homepage": "https://github.com/virkillz/tsert#readme",
   "bin": {
     "tsert": "./tsert.js"
+  },
+  "dependencies": {
+    "minimist": "^1.2.0"
   }
 }

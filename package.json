@@ -1,6 +1,6 @@
 {
   "name": "tsert",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "tsert will fetch html snippet from repository and insert into your html file. It will replace '[tsert-here]'",
   "main": "tsert.js",
   "scripts": {

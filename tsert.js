@@ -74,14 +74,14 @@ if (argv.h != undefined) {
     function check(file) {
         fs.readFile(file, 'utf8', function (err, data) {
             if (err) {
-                console.log("<tsert>  Error: Cannot read the file.");
+                console.log(colors.fg.standard[5] + "<tsert> " + colors.fg.standard[1] + "   Error: " + colors.reset + " Cannot read the file.");
                 return;
             } else {
     
                 if (data.includes("tsert::")) {
                         fetchKeyword(data, file);
                 } else {
-                    console.log("<tsert> ~ Finished: no keyword 'tsert::' founded anymore. ~");
+                    console.log(colors.fg.standard[5] + "<tsert> " + colors.reset + "  ~ Finished: no keyword 'tsert::' founded anymore. ~");
                 }
             };
         });
@@ -146,14 +146,14 @@ if (argv.h != undefined) {
     function writeFile(content, keyword, path) {
 
         if (!fs.existsSync(path)) {
-            console.log("<tsert> Error: The given path " + path + " did not exist");
+            console.log(colors.fg.standard[5] + "<tsert> " + colors.fg.standard[1] + "  Error: "+ colors.reset + " The given path " + path + " did not exist");
             process.exit(-1);
         }
     
         var document = "";
         fs.readFile(path, 'utf8', function (err, data) {
             if (err) {
-                console.log("<tsert>  Error: Cannot read the file.");
+                console.log(colors.fg.standard[5] + "<tsert> " + colors.fg.standard[1] + "   Error: " + colors.reset + " Cannot read the file.");
                 return console.log(err);
             } else {
     
@@ -162,11 +162,11 @@ if (argv.h != undefined) {
             };
     
             if (document == "") {
-                console.log("<tsert> Error: Failed to insert.");
+                console.log(colors.fg.standard[5] + "<tsert> " + colors.fg.standard[1] + "   Error: " + colors.reset + " Failed to insert.");
             } else {
                 fs.writeFile(path, document, 'utf8', function (err) {
                     if (err) { console.log(err); }
-                    else { console.log("<tsert> Success: " + " has been replaced."); check(path); }
+                    else { console.log(colors.fg.standard[5] + "<tsert> " + colors.fg.standard[2] + "  Success: tsert::" + keyword + " has been replaced." + colors.reset); check(path); }
                     ;
                 });
             }

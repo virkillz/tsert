@@ -2,8 +2,7 @@
 
 Tsert is a simple CLI tool you can install to help you write HTML faster. Its basically a very convenient snippet tool where you save the code in your github repo (or anywhere public), call only what you need in a quick command.
 
-![Alt text](screenshot.png "Tsert")
-
+![Alt text](tsert.gif "Tsert")
 
 ## How it worked
 When you run Tsert, it looks for any text `tsert::[snippet-name]` in your document, go to the web to fetch html with the same name and replace it. By using this, we can fetch snippet code from github repository and insert directly into given HTML file. Now you can just create one repo with all your HTML snippet, and call it from anywhere.
@@ -23,6 +22,9 @@ install globally
 
 
 ## Usage
+
+![Alt text](screenshot.png "Tsert")
+
 
 Pattern: 
 `tsert <target-file>`
